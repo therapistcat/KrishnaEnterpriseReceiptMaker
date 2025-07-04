@@ -6,7 +6,7 @@ function App() {
   const [serial, setSerial] = useState(null);
 
   useEffect(() => {
-    fetch("https://krishnaenterprisereceiptmaker.onrender.com/data/serial")
+    fetch("https://krishnaenterprisereceiptmaker-backend.onrender.com/data/serial")
       .then((res) => res.json())
       .then((data) => setSerial(data.serial));
   }, []);
@@ -16,7 +16,7 @@ function App() {
     const form = formRef.current;
     const formData = new FormData(form);
 
-    const response = await fetch("https://krishnaenterprisereceiptmaker.onrender.com/data/pdfConverter", {
+    const response = await fetch("https://krishnaenterprisereceiptmaker-backend.onrender.com/data/pdfConverter", {
       method: "POST",
       body: formData,
     });
