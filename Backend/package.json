@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@pdftron/pdfnet-node": "^11.5.0",
+    "multer": "^2.0.1",
+    "pdf-lib": "^1.17.1"
+  }
+}
