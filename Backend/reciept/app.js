@@ -22,11 +22,13 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// Serve React frontend from dist directory (after build) - PRIORITY
+const frontendPath = path.resolve(__dirname, '../../Front/dist');
+console.log('Frontend static path:', frontendPath);
+app.use(express.static(frontendPath));
+
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve React frontend from dist directory (after build)
-app.use(express.static(path.join(__dirname, '../../../Front/dist')));
 // CORS configuration - Allow all origins for development
 app.use(cors({
   origin: true,
@@ -51,7 +53,10 @@ app.use('/api/data', dataRouter);
 
 // Catch all handler: send back React's index.html file for any non-API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../../Front/dist/index.html'));
+  const indexPath = path.resolve(__dirname, '../../Front/dist/index.html');
+  console.log('Serving index.html from:', indexPath);
+  console.log('File exists:', require('fs').existsSync(indexPath));
+  res.sendFile(indexPath);
 });
 
 // MongoDB connection
