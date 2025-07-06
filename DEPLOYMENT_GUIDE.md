@@ -7,39 +7,34 @@
 2. Render account
 3. GitHub repository with your code
 
-### Backend Deployment
+### 🚀 **NUCLEAR OPTION: Combined Frontend + Backend Deployment (CORS-Free!)**
 
-1. **Create a Web Service on Render:**
-   - Connect your GitHub repository
+**This eliminates ALL CORS issues by serving frontend and backend from the same server!**
+
+1. **Create a Single Web Service on Render:**
+   - Connect your GitHub repository: `therapistcat/KrishnaEnterpriseReceiptMaker`
    - Set **Root Directory**: `Backend`
-   - Set **Build Command**: `npm install`
+   - Set **Build Command**: `npm run build:full`
    - Set **Start Command**: `npm start`
 
 2. **Environment Variables (Add in Render Dashboard):**
    ```
    MONGO_URI=mongodb+srv://chulbuleMishraJi:Jivanshu1@chulbulemishraji.8mcwh5g.mongodb.net/receipt_maker?retryWrites=true&w=majority&appName=chulbuleMishraJi
    NODE_ENV=production
-   PORT=10000
    ```
 
-3. **Important Notes:**
+3. **How It Works:**
+   - ✅ **Single Service** - Frontend and backend on same domain
+   - ✅ **No CORS Issues** - Same origin for all requests
+   - ✅ **API Routes** - Backend APIs available at `/api/*`
+   - ✅ **Frontend Routes** - React app serves from root `/`
+   - ✅ **Automatic Build** - Frontend builds during deployment
+
+4. **Important Notes:**
    - MongoDB Atlas connection is pre-configured and tested ✅
    - The PORT will be automatically set by Render
    - Database user: `chulbuleMishraJi` with password: `Jivanshu1`
-   - Make sure your MongoDB Atlas IP whitelist includes `0.0.0.0/0` or Render's IPs
-
-### Frontend Deployment
-
-1. **Create a Static Site on Render:**
-   - Connect your GitHub repository
-   - Set **Root Directory**: `Front`
-   - Set **Build Command**: `npm install && npm run build`
-   - Set **Publish Directory**: `dist`
-
-2. **Update Frontend API URLs:**
-   - The frontend now uses environment-aware configuration
-   - Update `Front/src/config.js` with your actual backend URL
-   - Change the production API_BASE_URL to match your Render backend service URL
+   - Make sure your MongoDB Atlas IP whitelist includes `0.0.0.0/0`
 
 ### Alternative: Single Service Deployment
 

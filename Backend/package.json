@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node reciept/bin/www",
     "dev": "nodemon reciept/bin/www",
-    "build": "echo 'No build step required for backend'"
+    "build": "cd ../Front && npm install && npm run build",
+    "build:full": "npm install && npm run build"
   },
   "dependencies": {
     "@pdftron/pdfnet-node": "^11.5.0",

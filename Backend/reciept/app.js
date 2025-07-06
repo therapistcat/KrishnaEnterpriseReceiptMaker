@@ -20,7 +20,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve React frontend from dist directory (after build)
+app.use(express.static(path.join(__dirname, '../../../Front/dist')));
 // CORS configuration - Allow all origins for development
 app.use(cors({
   origin: true,
@@ -37,8 +41,14 @@ app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 
-app.use('/', indexRouter);
-app.use('/data', dataRouter); // <-- add this
+// API routes
+app.use('/api', indexRouter);
+app.use('/api/data', dataRouter);
+
+// Catch all handler: send back React's index.html file for any non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../../Front/dist/index.html'));
+});
 
 require('dotenv').config(); // Make sure this is at the very top, before mongoose.connect
 

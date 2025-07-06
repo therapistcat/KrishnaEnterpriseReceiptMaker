@@ -1,12 +1,12 @@
-// API Configuration
+// API Configuration - Using same server for frontend and backend
 const config = {
   development: {
-    // Try proxy first, fallback to direct connection
-    API_BASE_URL: window.location.hostname === 'localhost' ? '/api' : 'http://localhost:3001'
+    // For development, use the combined server
+    API_BASE_URL: '/api'
   },
   production: {
-    // Update this with your actual Render backend URL
-    API_BASE_URL: 'https://receipt-maker-backend.onrender.com'
+    // For production, also use same server (no CORS issues!)
+    API_BASE_URL: '/api'
   }
 };
 
