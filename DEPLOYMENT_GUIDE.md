@@ -17,7 +17,7 @@
 
 2. **Environment Variables (Add in Render Dashboard):**
    ```
-   MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/receipt_maker
+   MONGO_URI=mongodb+srv://chulbuleMishraJi:jivanshu1@chulbulemishraji.8mcwh5g.mongodb.net/receipt_maker?retryWrites=true&w=majority&appName=chulbuleMishraJi
    NODE_ENV=production
    PORT=10000
    ```

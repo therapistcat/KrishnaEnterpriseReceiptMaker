@@ -2,13 +2,13 @@
   "name": "receipt-maker-backend",
   "version": "1.0.0",
   "description": "Backend for Krishna Enterprise Receipt Maker",
-  "main": "receipt/bin/www",
+  "main": "reciept/bin/www",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "node receipt/bin/www",
-    "dev": "nodemon receipt/bin/www",
+    "start": "node reciept/bin/www",
+    "dev": "nodemon reciept/bin/www",
     "build": "echo 'No build step required for backend'"
   },
   "dependencies": {
