@@ -44,15 +44,26 @@ function App() {
 
       if (response.ok) {
         const blob = await response.blob();
+
+        // Force download instead of opening in new tab
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
+        a.style.display = "none";
         a.href = url;
-        a.download = "receipt.pdf";
+        a.download = `receipt_${Date.now()}.pdf`; // Unique filename
+        a.setAttribute('download', `receipt_${Date.now()}.pdf`); // Force download
+
         document.body.appendChild(a);
         a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+
         console.log('PDF downloaded successfully');
+        alert('PDF downloaded successfully!');
       } else {
         const errorText = await response.text();
         console.error('PDF generation failed:', errorText);

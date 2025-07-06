@@ -44,7 +44,9 @@ app.options('*', (req, res) => {
 });
 
 // API routes
-app.use('/api', indexRouter);
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Backend is working!' });
+});
 app.use('/api/data', dataRouter);
 
 // Catch all handler: send back React's index.html file for any non-API routes
