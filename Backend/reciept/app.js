@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables first
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -49,8 +51,6 @@ app.use('/api/data', dataRouter);
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../../Front/dist/index.html'));
 });
-
-require('dotenv').config(); // Make sure this is at the very top, before mongoose.connect
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI);
