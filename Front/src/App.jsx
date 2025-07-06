@@ -1,12 +1,13 @@
 import { useRef, useEffect, useState } from "react";
 import "./App.css";
+import { API_BASE_URL } from "./config";
 
 function App() {
   const formRef = useRef();
   const [serial, setSerial] = useState(null);
 
   useEffect(() => {
-    fetch("https://krishnaenterprisereceiptmaker-backend.onrender.com/data/serial")
+    fetch(`${API_BASE_URL}/data/serial`)
       .then((res) => res.json())
       .then((data) => setSerial(data.serial));
   }, []);
@@ -16,7 +17,7 @@ function App() {
     const form = formRef.current;
     const formData = new FormData(form);
 
-    const response = await fetch("https://krishnaenterprisereceiptmaker-backend.onrender.com/data/pdfConverter", {
+    const response = await fetch(`${API_BASE_URL}/data/pdfConverter`, {
       method: "POST",
       body: formData,
     });
