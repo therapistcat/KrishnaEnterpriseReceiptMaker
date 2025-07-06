@@ -23,9 +23,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // Serve React frontend from dist directory (after build) - PRIORITY
-const frontendPath = path.resolve(__dirname, '../../Front/dist');
-console.log('Frontend static path:', frontendPath);
-app.use(express.static(frontendPath));
+// Try multiple possible paths for frontend
+const possiblePaths = [
+  path.resolve(__dirname, '../../Front/dist'),           // Local development
+  path.resolve(__dirname, '../../../Front/dist'),       // Alternative local
+  path.resolve(process.cwd(), 'Front/dist'),            // Render deployment
+  path.resolve(process.cwd(), '../Front/dist')          // Alternative Render
+];
+
+let frontendPath = null;
+for (const testPath of possiblePaths) {
+  if (require('fs').existsSync(testPath)) {
+    frontendPath = testPath;
+    break;
+  }
+}
+
+console.log('Tested paths:', possiblePaths);
+console.log('Selected frontend path:', frontendPath);
+console.log('Frontend path exists:', frontendPath ? require('fs').existsSync(frontendPath) : false);
+
+if (frontendPath) {
+  app.use(express.static(frontendPath));
+} else {
+  console.error('❌ Frontend dist directory not found! Build may have failed.');
+}
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -53,10 +75,34 @@ app.use('/api/data', dataRouter);
 
 // Catch all handler: send back React's index.html file for any non-API routes
 app.get('*', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Front/dist/index.html');
+  // Try multiple possible paths for index.html
+  const possibleIndexPaths = [
+    path.resolve(__dirname, '../../Front/dist/index.html'),
+    path.resolve(__dirname, '../../../Front/dist/index.html'),
+    path.resolve(process.cwd(), 'Front/dist/index.html'),
+    path.resolve(process.cwd(), '../Front/dist/index.html')
+  ];
+
+  let indexPath = null;
+  for (const testPath of possibleIndexPaths) {
+    if (require('fs').existsSync(testPath)) {
+      indexPath = testPath;
+      break;
+    }
+  }
+
   console.log('Serving index.html from:', indexPath);
-  console.log('File exists:', require('fs').existsSync(indexPath));
-  res.sendFile(indexPath);
+  console.log('File exists:', indexPath ? require('fs').existsSync(indexPath) : false);
+
+  if (indexPath) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({
+      error: 'Frontend not found',
+      message: 'Frontend build files are missing. Please check the build process.',
+      searchedPaths: possibleIndexPaths
+    });
+  }
 });
 
 // MongoDB connection

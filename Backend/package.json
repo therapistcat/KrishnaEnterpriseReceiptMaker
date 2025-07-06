@@ -9,8 +9,8 @@
   "scripts": {
     "start": "node reciept/bin/www",
     "dev": "nodemon reciept/bin/www",
-    "build": "cd ../Front && npm install && npm run build",
-    "build:full": "npm install && npm run build"
+    "build": "cd ../Front && npm install && npm run build && echo 'Frontend built successfully'",
+    "build:full": "npm install && cd ../Front && npm install && npm run build && echo 'Full build completed'"
   },
   "dependencies": {
     "@pdftron/pdfnet-node": "^11.5.0",
