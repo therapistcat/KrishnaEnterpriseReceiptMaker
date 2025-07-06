@@ -1,7 +1,8 @@
 // API Configuration
 const config = {
   development: {
-    API_BASE_URL: 'http://localhost:3000'
+    // Try proxy first, fallback to direct connection
+    API_BASE_URL: window.location.hostname === 'localhost' ? '/api' : 'http://localhost:3001'
   },
   production: {
     // Update this with your actual Render backend URL
