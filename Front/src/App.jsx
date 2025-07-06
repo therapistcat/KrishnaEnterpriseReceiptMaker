@@ -7,6 +7,8 @@ function App() {
   const [serial, setSerial] = useState(null);
 
   useEffect(() => {
+    console.log('Environment mode:', import.meta.env.MODE);
+    console.log('API_BASE_URL:', API_BASE_URL);
     console.log('Fetching serial from:', `${API_BASE_URL}/data/serial`);
     fetch(`${API_BASE_URL}/data/serial`)
       .then((res) => {
