@@ -1,0 +1,28 @@
+services:
+  # Backend Service
+  - type: web
+    name: receipt-maker-backend
+    env: node
+    buildCommand: cd Backend && npm install
+    startCommand: cd Backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: receipt-maker-backend
+          property: port
+      # Add your MongoDB connection string in Render dashboard
+      - key: MONGO_URI
+        sync: false  # Set this manually in Render dashboard
+    
+  # Frontend Service (Static Site)
+  - type: web
+    name: receipt-maker-frontend
+    env: static
+    buildCommand: cd Front && npm install && npm run build
+    staticPublishPath: ./Front/dist
+    envVars:
+      - key: NODE_ENV
+        value: production

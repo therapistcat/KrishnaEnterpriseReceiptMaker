@@ -70,7 +70,7 @@ const pdfConverter = async (req, res) => {
         fs.writeFileSync(serialPath, JSON.stringify({ latest: serial }));
 
         const filename = `file_${serial}`;
-        const inputPath = path.resolve(__dirname, "./Files/blank.PDF");
+        const inputPath = path.resolve(__dirname, "./Files/blank.pdf");
         const outputPath = path.resolve(__dirname, `./Files/${filename}.pdf`);
 
         // Load the existing PDF
