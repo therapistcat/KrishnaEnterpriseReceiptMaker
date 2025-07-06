@@ -26,8 +26,10 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/data', dataRouter); // <-- add this
 
+require('dotenv').config(); // Make sure this is at the very top, before mongoose.connect
+
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/receipt-db', {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -53,7 +55,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-require('dotenv').config();
 
 module.exports = app;
