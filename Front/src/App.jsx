@@ -7,9 +7,23 @@ function App() {
   const [serial, setSerial] = useState(null);
 
   useEffect(() => {
+    console.log('Fetching serial from:', `${API_BASE_URL}/data/serial`);
     fetch(`${API_BASE_URL}/data/serial`)
-      .then((res) => res.json())
-      .then((data) => setSerial(data.serial));
+      .then((res) => {
+        console.log('Serial response status:', res.status);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Serial data received:', data);
+        setSerial(data.serial);
+      })
+      .catch((error) => {
+        console.error('Error fetching serial:', error);
+        alert(`Error connecting to backend: ${error.message}`);
+      });
   }, []);
 
   const handleSubmit = async (e) => {
@@ -17,23 +31,34 @@ function App() {
     const form = formRef.current;
     const formData = new FormData(form);
 
-    const response = await fetch(`${API_BASE_URL}/data/pdfConverter`, {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      console.log('Submitting to:', `${API_BASE_URL}/data/pdfConverter`);
+      const response = await fetch(`${API_BASE_URL}/data/pdfConverter`, {
+        method: "POST",
+        body: formData,
+      });
 
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "receipt.pdf";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } else {
-      alert("Failed to generate PDF");
+      console.log('PDF response status:', response.status);
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "receipt.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        console.log('PDF downloaded successfully');
+      } else {
+        const errorText = await response.text();
+        console.error('PDF generation failed:', errorText);
+        alert(`Failed to generate PDF: ${response.status} - ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert(`Error: ${error.message}`);
     }
   };
 

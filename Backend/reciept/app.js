@@ -21,7 +21,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+// CORS configuration to allow frontend connections
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Vite dev server
+    'http://localhost:3000', // Alternative dev server
+    'https://receipt-maker-frontend.onrender.com', // Production frontend
+    /\.onrender\.com$/ // Allow any Render subdomain
+  ],
+  credentials: true
+}));
 
 app.use('/', indexRouter);
 app.use('/data', dataRouter); // <-- add this
