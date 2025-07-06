@@ -27,7 +27,7 @@ app.use('/', indexRouter);
 app.use('/data', dataRouter); // <-- add this
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/receipt-db', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/receipt-db', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
