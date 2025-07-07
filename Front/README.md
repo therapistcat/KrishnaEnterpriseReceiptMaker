@@ -1,4 +1,4 @@
-# KRISHNA ENTERPRISE Receipt Maker
+# SHREE GANESH ENTERPRISES Receipt Maker
 
 A professional, responsive React app for generating and downloading PDF receipts.
 
@@ -34,10 +34,10 @@ A professional, responsive React app for generating and downloading PDF receipts
 
 ## Branding
 
-- Header: **KRISHNA ENTERPRISE**
-- Address: Near Saiwan Petrol Pump, Survey no 87/1/1, Vajreshwari Road, At Post Saiwan, Palipada
-- Mobile No: 7798888999 / 7020677311
+- Header: **SHREE GANESH ENTERPRISES**
+- Address: Shop No. 7, Om Sai Dham CHS Society, Near Unity Small Finance Bank, Nallasopara (E) – 401209
+- Mobile No: 7020872250 / 9960959951
 
 ---
 
-© KRISHNA ENTERPRISE
+© SHREE GANESH ENTERPRISES
