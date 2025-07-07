@@ -1,9 +1,9 @@
 {
-  "name": "krishna-enterprise-receipt-maker",
+  "name": "shree-ganesh-enterprises-receipt-maker",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Receipt Maker for KRISHNA ENTERPRISE",
+  "description": "Receipt Maker for SHREE GANESH ENTERPRISES",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

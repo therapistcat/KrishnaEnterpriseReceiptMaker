@@ -77,7 +77,7 @@ function App() {
 
   return (
     <>
-      <div className="header">KRISHNA ENTERPRISE</div>
+      <div className="header">SHREE GANESH ENTERPRISES</div>
       <div className="form-container">
         <h2
           style={{
@@ -125,10 +125,6 @@ function App() {
             <input name="weight" type="number" required />
           </label>
           <label>
-            Tare Weight:
-            <input name="tareWt" type="number" required />
-          </label>
-          <label>
             Location:
             <input name="location" type="text" required />
           </label>
@@ -165,12 +161,12 @@ function App() {
         }}
       >
         <div style={{ marginBottom: "6px" }}>
-          Near Saiwan Petrol Pump, Survey no 87/1/1,
+          Shop No. 7, Om Sai Dham CHS Society,
           <br />
-          Vajreshwari Road, At Post Saiwan, Palipada
+          Near Unity Small Finance Bank, Nallasopara (E) – 401209
         </div>
         <div style={{ color: "#4fc3f7", fontWeight: 600 }}>
-          Mobile No: 7798888999 / 7020677311
+          Mobile No: 7020872250 / 9960959951
         </div>
       </div>
     </>

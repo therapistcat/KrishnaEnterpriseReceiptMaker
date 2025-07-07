@@ -20,13 +20,6 @@ const dataSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  tareWt: {
-    type: Number,
-    required: true
-  },
-  netWt: {
-    type: Number
-  },
   location: {
     type: String,
     required: true
