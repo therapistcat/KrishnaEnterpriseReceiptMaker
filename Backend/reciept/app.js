@@ -43,15 +43,7 @@ console.log('Tested paths:', possiblePaths);
 console.log('Selected frontend path:', frontendPath);
 console.log('Frontend path exists:', frontendPath ? require('fs').existsSync(frontendPath) : false);
 
-// Serve static files from public directory first
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Serve React frontend from dist directory (but NOT for /api routes)
-if (frontendPath) {
-  app.use(express.static(frontendPath));
-} else {
-  console.error('❌ Frontend dist directory not found! Build may have failed.');
-}
+// Static file serving will be moved AFTER API routes
 // CORS configuration - Allow all origins for development
 app.use(cors({
   origin: true,
@@ -99,6 +91,16 @@ app.get('/api/test', (req, res) => {
 });
 
 app.use('/api/data', dataRouter);
+
+// Static file serving - AFTER API routes to prevent interference
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve React frontend from dist directory
+if (frontendPath) {
+  app.use(express.static(frontendPath));
+} else {
+  console.error('❌ Frontend dist directory not found! Build may have failed.');
+}
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI);
