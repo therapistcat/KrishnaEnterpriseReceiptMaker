@@ -117,28 +117,28 @@ function App() {
             <input name="material" type="text" required />
           </label>
           <label>
-            Gross Weight:
-            <input name="grossWt" type="number" required />
+            Measurement:
+            <input name="measurement" type="text" required />
+          </label>
+          <label>
+            Weight (kgs):
+            <input name="weight" type="number" required />
           </label>
           <label>
             Tare Weight:
             <input name="tareWt" type="number" required />
           </label>
           <label>
-            Gross Date:
+            Location:
+            <input name="location" type="text" required />
+          </label>
+          <label>
+            Date:
             <input name="date1" type="date" />
           </label>
           <label>
-            Gross Time:
+            Time:
             <input name="time1" type="time" />
-          </label>
-          <label>
-            Tare Date:
-            <input name="date2" type="date" />
-          </label>
-          <label>
-            Tare Time:
-            <input name="time2" type="time" />
           </label>
           <label>
             Image 1:

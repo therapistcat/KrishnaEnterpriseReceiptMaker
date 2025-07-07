@@ -5,20 +5,20 @@ const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 
 
 const dataSaver = async (req, res) => {
-    const { partyName, vehicleNo, material, grossWt, tareWt, time1, date1, time2, date2 } = req.body;
+    const { partyName, vehicleNo, material, measurement, weight, tareWt, location, time1, date1 } = req.body;
     try {
-        if (!partyName || !vehicleNo || !material || !grossWt || !tareWt) return res.status(400).json({ error: "Please fill the complete fields" })
+        if (!partyName || !vehicleNo || !material || !measurement || !weight || !tareWt || !location) return res.status(400).json({ error: "Please fill the complete fields" })
 
         const newData = new Data({
             partyName,
             vehicleNo,
             material,
-            grossWt,
+            measurement,
+            weight,
             tareWt,
+            location,
             time1,
             date1,
-            time2,
-            date2,
         })
 
         if (req.files && req.files.image1 && req.files.image1[0]) {
@@ -45,23 +45,23 @@ const dataSaver = async (req, res) => {
 
 const pdfConverter = async (req, res) => {
     try {
-        const { partyName, vehicleNo, material, grossWt, tareWt, date1, time1, date2, time2, customSerial } = req.body;
+        const { partyName, vehicleNo, material, measurement, weight, tareWt, location, date1, time1, customSerial } = req.body;
         const image1Buffer = req.files?.image1?.[0]?.buffer;
         const image2Buffer = req.files?.image2?.[0]?.buffer;
 
         // Convert weights to numbers
-        const gross = Number(grossWt);
+        const weightNum = Number(weight);
         const tare = Number(tareWt);
 
-        // Validation: Gross must be greater than Tare
-        if (isNaN(gross) || isNaN(tare)) {
-            return res.status(400).json({ error: "Gross and Tare weights must be numbers" });
+        // Validation: Weight must be greater than Tare
+        if (isNaN(weightNum) || isNaN(tare)) {
+            return res.status(400).json({ error: "Weight and Tare weights must be numbers" });
         }
-        if (gross <= tare) {
-            return res.status(400).json({ error: "Gross Weight must be greater than Tare Weight" });
+        if (weightNum <= tare) {
+            return res.status(400).json({ error: "Weight must be greater than Tare Weight" });
         }
 
-        const netWt = gross - tare;
+        const netWt = weightNum - tare;
 
         // Serial logic (auto-increment only)
         const serialPath = path.resolve(__dirname, "./Files/serial.json");
@@ -90,13 +90,13 @@ const pdfConverter = async (req, res) => {
         page.drawText(partyName || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
         page.drawText(vehicleNo || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
         page.drawText(material || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(String(gross), { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
+        page.drawText(measurement || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
+        page.drawText(`${String(weightNum)} kgs`, { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
         page.drawText(String(tare), { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
         page.drawText(String(netWt), { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
+        page.drawText(location || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
         page.drawText(date1 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(time1 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(date2 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(time2 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) });
+        page.drawText(time1 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) });
 
 
         // Add images if provided
@@ -113,18 +113,18 @@ const pdfConverter = async (req, res) => {
         const pdfBytes = await pdfDoc.save();
         fs.writeFileSync(outputPath, pdfBytes);
 
-        // Save to MongoDB (add netWt and both dates/times)
+        // Save to MongoDB (add netWt and new fields)
         const newData = new Data({
             partyName,
             vehicleNo,
             material,
-            grossWt: gross,
+            measurement,
+            weight: weightNum,
             tareWt: tare,
             netWt,
-            date1, // Gross Date
-            time1, // Gross Time
-            date2, // Tare Date
-            time2, // Tare Time
+            location,
+            date1,
+            time1,
             image1: image1Buffer ? { data: image1Buffer, contentType: req.files?.image1?.[0]?.mimetype } : undefined,
             image2: image2Buffer ? { data: image2Buffer, contentType: req.files?.image2?.[0]?.mimetype } : undefined,
         });

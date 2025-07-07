@@ -12,7 +12,11 @@ const dataSchema = new mongoose.Schema({
   material: {
     type: String
   },
-  grossWt: {
+  measurement: {
+    type: String,
+    required: true
+  },
+  weight: {
     type: Number,
     required: true
   },
@@ -22,6 +26,10 @@ const dataSchema = new mongoose.Schema({
   },
   netWt: {
     type: Number
+  },
+  location: {
+    type: String,
+    required: true
   },
 
   image1: {
@@ -34,8 +42,6 @@ const dataSchema = new mongoose.Schema({
     data: Buffer,
     contentType: String
   },
-  date2: { type: String, default: () => new Date().toISOString() },
-  time2: { type: String },
 
 
 });

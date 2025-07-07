@@ -44,35 +44,35 @@
             <label for="material">Material:</label>
             <input type="text" id="material" name="material" value="Steel Scrap" required>
         </div>
-        
+
         <div class="form-group">
-            <label for="grossWt">Gross Weight (kg):</label>
-            <input type="number" id="grossWt" name="grossWt" value="1500" required>
+            <label for="measurement">Measurement:</label>
+            <input type="text" id="measurement" name="measurement" value="Truck Load" required>
         </div>
-        
+
+        <div class="form-group">
+            <label for="weight">Weight (kgs):</label>
+            <input type="number" id="weight" name="weight" value="1500" required>
+        </div>
+
         <div class="form-group">
             <label for="tareWt">Tare Weight (kg):</label>
             <input type="number" id="tareWt" name="tareWt" value="300" required>
         </div>
-        
+
         <div class="form-group">
-            <label for="date1">Gross Date:</label>
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" value="Mumbai" required>
+        </div>
+
+        <div class="form-group">
+            <label for="date1">Date:</label>
             <input type="date" id="date1" name="date1" required>
         </div>
-        
+
         <div class="form-group">
-            <label for="time1">Gross Time:</label>
+            <label for="time1">Time:</label>
             <input type="time" id="time1" name="time1" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="date2">Tare Date:</label>
-            <input type="date" id="date2" name="date2" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="time2">Tare Time:</label>
-            <input type="time" id="time2" name="time2" required>
         </div>
         
         <div class="form-group">
@@ -101,8 +101,6 @@
             
             document.getElementById('date1').value = date;
             document.getElementById('time1').value = time;
-            document.getElementById('date2').value = date;
-            document.getElementById('time2').value = time;
         };
         
         function addResult(message, type = 'info') {
