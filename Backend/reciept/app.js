@@ -77,8 +77,27 @@ app.use((req, res, next) => {
 // API routes
 app.get('/api/health', (req, res) => {
   console.log('Health check endpoint hit');
-  res.json({ status: 'OK', message: 'Backend is working!' });
+  res.json({
+    status: 'OK',
+    message: 'Backend is working!',
+    environment: process.env.NODE_ENV,
+    port: process.env.PORT,
+    timestamp: new Date().toISOString()
+  });
 });
+
+// Test endpoint to debug deployment
+app.get('/api/test', (req, res) => {
+  console.log('Test endpoint hit');
+  res.json({
+    message: 'Test endpoint working',
+    cwd: process.cwd(),
+    __dirname: __dirname,
+    frontendPath: frontendPath,
+    environment: process.env.NODE_ENV
+  });
+});
+
 app.use('/api/data', dataRouter);
 
 // MongoDB connection
