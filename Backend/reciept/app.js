@@ -43,14 +43,15 @@ console.log('Tested paths:', possiblePaths);
 console.log('Selected frontend path:', frontendPath);
 console.log('Frontend path exists:', frontendPath ? require('fs').existsSync(frontendPath) : false);
 
+// Serve static files from public directory first
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve React frontend from dist directory (but NOT for /api routes)
 if (frontendPath) {
   app.use(express.static(frontendPath));
 } else {
   console.error('❌ Frontend dist directory not found! Build may have failed.');
 }
-
-// Serve static files from public directory
-app.use(express.static(path.join(__dirname, 'public')));
 // CORS configuration - Allow all origins for development
 app.use(cors({
   origin: true,
@@ -67,13 +68,30 @@ app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
+
 // API routes
 app.get('/api/health', (req, res) => {
+  console.log('Health check endpoint hit');
   res.json({ status: 'OK', message: 'Backend is working!' });
 });
 app.use('/api/data', dataRouter);
 
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI);
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB connected');
+});
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
 // Catch all handler: send back React's index.html file for any non-API routes
+// This must come AFTER all API routes but BEFORE error handlers
 app.get('*', (req, res) => {
   // Try multiple possible paths for index.html
   const possibleIndexPaths = [
@@ -103,20 +121,6 @@ app.get('*', (req, res) => {
       searchedPaths: possibleIndexPaths
     });
   }
-});
-
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI);
-mongoose.connection.on('connected', () => {
-  console.log('MongoDB connected');
-});
-mongoose.connection.on('error', (err) => {
-  console.error('MongoDB connection error:', err);
-});
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
 });
 
 // error handler
