@@ -91,19 +91,16 @@ const pdfConverter = async (req, res) => {
 
         
 
-        // Only raw data, no labels, spaced to avoid overlap
-        let y = 700;
-        const lineGap = 24;
-
-        page.drawText(String(serial), { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap; // Serial No.
-        page.drawText(partyName || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(vehicleNo || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(material || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(measurement || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(`${String(weightNum)} kgs`, { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(location || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(date1 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) }); y -= lineGap;
-        page.drawText(time1 || '', { x: 50, y: y, size: 14, font, color: rgb(0,0,0) });
+        // Position text according to new blank.pdf template coordinates
+        page.drawText(String(serial), { x: 110, y: 210, size: 14, font, color: rgb(0,0,0) }); // Serial No.
+        page.drawText(partyName || '', { x: 150, y: 235, size: 14, font, color: rgb(0,0,0) }); // Party Name
+        page.drawText(vehicleNo || '', { x: 175, y: 265, size: 14, font, color: rgb(0,0,0) }); // Vehicle No.
+        page.drawText(material || '', { x: 160, y: 288, size: 14, font, color: rgb(0,0,0) }); // Material
+        page.drawText(measurement || '', { x: 175, y: 312, size: 14, font, color: rgb(0,0,0) }); // Measurement
+        page.drawText(`${String(weightNum)} kgs`, { x: 135, y: 338, size: 14, font, color: rgb(0,0,0) }); // Weight
+        page.drawText(location || '', { x: 160, y: 360, size: 14, font, color: rgb(0,0,0) }); // Location
+        page.drawText(date1 || '', { x: 500, y: 210, size: 14, font, color: rgb(0,0,0) }); // Date
+        page.drawText(time1 || '', { x: 515, y: 240, size: 14, font, color: rgb(0,0,0) }); // Time
 
 
         // Add images if provided
