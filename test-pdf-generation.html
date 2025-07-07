@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PDF Generation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background-color: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>Receipt Maker - PDF Generation Test</h1>
+    
+    <div class="form-group">
+        <button onclick="testConnection()">Test Backend Connection</button>
+        <button onclick="getSerial()">Get Current Serial</button>
+    </div>
+    
+    <div id="connectionResults"></div>
+    
+    <form id="receiptForm">
+        <h2>Generate Receipt PDF</h2>
+        
+        <div class="form-group">
+            <label for="partyName">Party Name:</label>
+            <input type="text" id="partyName" name="partyName" value="Test Company Ltd." required>
+        </div>
+        
+        <div class="form-group">
+            <label for="vehicleNo">Vehicle Number:</label>
+            <input type="text" id="vehicleNo" name="vehicleNo" value="MH12AB1234" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="material">Material:</label>
+            <input type="text" id="material" name="material" value="Steel Scrap" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="grossWt">Gross Weight (kg):</label>
+            <input type="number" id="grossWt" name="grossWt" value="1500" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="tareWt">Tare Weight (kg):</label>
+            <input type="number" id="tareWt" name="tareWt" value="300" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date1">Gross Date:</label>
+            <input type="date" id="date1" name="date1" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="time1">Gross Time:</label>
+            <input type="time" id="time1" name="time1" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date2">Tare Date:</label>
+            <input type="date" id="date2" name="date2" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="time2">Tare Time:</label>
+            <input type="time" id="time2" name="time2" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="image1">Gross Weight Image (optional):</label>
+            <input type="file" id="image1" name="image1" accept="image/*">
+        </div>
+        
+        <div class="form-group">
+            <label for="image2">Tare Weight Image (optional):</label>
+            <input type="file" id="image2" name="image2" accept="image/*">
+        </div>
+        
+        <button type="submit">Generate PDF</button>
+    </form>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3001/api';
+        
+        // Set current date and time as defaults
+        window.onload = function() {
+            const now = new Date();
+            const date = now.toISOString().split('T')[0];
+            const time = now.toTimeString().split(' ')[0].substring(0, 5);
+            
+            document.getElementById('date1').value = date;
+            document.getElementById('time1').value = time;
+            document.getElementById('date2').value = date;
+            document.getElementById('time2').value = time;
+        };
+        
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        function addConnectionResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('connectionResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        async function testConnection() {
+            try {
+                addConnectionResult('🔄 Testing backend connection...', 'info');
+                const response = await fetch(`${API_BASE_URL}/health`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addConnectionResult(`✅ Backend connected! Status: ${data.status}`, 'success');
+                } else {
+                    addConnectionResult(`❌ Backend connection failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addConnectionResult(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function getSerial() {
+            try {
+                addConnectionResult('🔄 Getting current serial number...', 'info');
+                const response = await fetch(`${API_BASE_URL}/data/serial`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addConnectionResult(`📋 Current serial number: ${data.serial}`, 'success');
+                } else {
+                    addConnectionResult(`❌ Failed to get serial: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addConnectionResult(`❌ Serial fetch error: ${error.message}`, 'error');
+            }
+        }
+        
+        document.getElementById('receiptForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                addResult('🔄 Generating PDF...', 'info');
+                
+                const formData = new FormData(this);
+                
+                const response = await fetch(`${API_BASE_URL}/data/pdfConverter`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    
+                    // Download the PDF
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `receipt_${Date.now()}.pdf`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    addResult(`✅ PDF generated successfully! Size: ${blob.size} bytes`, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ PDF generation failed: ${response.status} - ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+            }
+        });
+        
+        // Auto-test connection on load
+        setTimeout(testConnection, 500);
+    </script>
+</body>
+</html>

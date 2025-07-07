@@ -14,8 +14,8 @@
             resultDiv.innerHTML = 'Testing...';
             
             try {
-                console.log('Testing connection to: http://localhost:3000/data/serial');
-                const response = await fetch('http://localhost:3000/data/serial');
+                console.log('Testing connection to: http://localhost:3001/api/data/serial');
+                const response = await fetch('http://localhost:3001/api/data/serial');
                 console.log('Response status:', response.status);
                 
                 if (response.ok) {

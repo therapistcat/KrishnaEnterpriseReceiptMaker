@@ -1,12 +1,12 @@
-// API Configuration - Using same server for frontend and backend
+// API Configuration - Using separate backend server
 const config = {
   development: {
-    // For development, use the combined server
+    // For development, use Vite proxy (relative path)
     API_BASE_URL: '/api'
   },
   production: {
-    // For production, also use same server (no CORS issues!)
-    API_BASE_URL: '/api'
+    // For production, use deployed backend
+    API_BASE_URL: 'https://krishnaenterprisereceiptmaker-backend.onrender.com/api'
   }
 };
 

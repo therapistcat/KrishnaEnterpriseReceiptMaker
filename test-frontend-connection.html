@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Frontend Connection</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Backend Connection Test</h1>
+    
+    <button onclick="testSerial()">Test Serial Endpoint</button>
+    <button onclick="testHealth()">Test Health Endpoint</button>
+    <button onclick="testPDFGeneration()">Test PDF Generation</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3001/api';
+        
+        function addResult(message, isSuccess = true) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${isSuccess ? 'success' : 'error'}`;
+            resultDiv.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        async function testSerial() {
+            try {
+                console.log('Testing serial endpoint...');
+                const response = await fetch(`${API_BASE_URL}/data/serial`);
+                console.log('Serial response:', response);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Serial data:', data);
+                    addResult(`✅ Serial endpoint working! Serial: ${data.serial}`, true);
+                } else {
+                    addResult(`❌ Serial endpoint failed: ${response.status} - ${response.statusText}`, false);
+                }
+            } catch (error) {
+                console.error('Serial test error:', error);
+                addResult(`❌ Serial endpoint error: ${error.message}`, false);
+            }
+        }
+        
+        async function testHealth() {
+            try {
+                console.log('Testing health endpoint...');
+                const response = await fetch(`${API_BASE_URL}/health`);
+                console.log('Health response:', response);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Health data:', data);
+                    addResult(`✅ Health endpoint working! Status: ${data.status}`, true);
+                } else {
+                    addResult(`❌ Health endpoint failed: ${response.status} - ${response.statusText}`, false);
+                }
+            } catch (error) {
+                console.error('Health test error:', error);
+                addResult(`❌ Health endpoint error: ${error.message}`, false);
+            }
+        }
+        
+        async function testPDFGeneration() {
+            try {
+                console.log('Testing PDF generation...');
+                
+                // Create test form data
+                const formData = new FormData();
+                formData.append('partyName', 'Test Party');
+                formData.append('vehicleNo', 'TEST123');
+                formData.append('material', 'Test Material');
+                formData.append('grossWt', '1000');
+                formData.append('tareWt', '200');
+                formData.append('date1', new Date().toISOString().split('T')[0]);
+                formData.append('time1', new Date().toTimeString().split(' ')[0]);
+                formData.append('date2', new Date().toISOString().split('T')[0]);
+                formData.append('time2', new Date().toTimeString().split(' ')[0]);
+                
+                const response = await fetch(`${API_BASE_URL}/data/pdfConverter`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('PDF response:', response);
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    console.log('PDF blob size:', blob.size);
+                    
+                    // Download the PDF
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `test_receipt_${Date.now()}.pdf`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    addResult(`✅ PDF generation working! Downloaded ${blob.size} bytes`, true);
+                } else {
+                    const errorText = await response.text();
+                    addResult(`❌ PDF generation failed: ${response.status} - ${errorText}`, false);
+                }
+            } catch (error) {
+                console.error('PDF test error:', error);
+                addResult(`❌ PDF generation error: ${error.message}`, false);
+            }
+        }
+        
+        // Auto-run tests on page load
+        window.onload = function() {
+            addResult('🚀 Starting connection tests...', true);
+            setTimeout(testHealth, 500);
+            setTimeout(testSerial, 1000);
+        };
+    </script>
+</body>
+</html>
