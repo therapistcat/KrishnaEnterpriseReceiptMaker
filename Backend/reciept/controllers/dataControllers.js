@@ -44,7 +44,7 @@ const dataSaver = async (req, res) => {
 
 const pdfConverter = async (req, res) => {
     try {
-        const { partyName, vehicleNo, material, measurement, weight, location, date1, time1 } = req.body;
+        const { partyName, vehicleNo, material, measurement, weight, location, date1, time1, customSerial } = req.body;
         const image1Buffer = req.files?.image1?.[0]?.buffer;
         const image2Buffer = req.files?.image2?.[0]?.buffer;
 
@@ -59,11 +59,24 @@ const pdfConverter = async (req, res) => {
             return res.status(400).json({ error: "Weight must be greater than 0" });
         }
 
-        // Serial logic (auto-increment only)
+        // Serial logic (custom or auto-increment)
         const serialPath = path.resolve(__dirname, "./Files/serial.json");
         let serialData = JSON.parse(fs.readFileSync(serialPath, "utf-8"));
-        let serial = serialData.latest + 1;
-        fs.writeFileSync(serialPath, JSON.stringify({ latest: serial }));
+        let serial;
+
+        if (customSerial && customSerial.trim() !== '') {
+            // Use custom serial number provided by user
+            serial = parseInt(customSerial.trim());
+            if (isNaN(serial) || serial <= 0) {
+                return res.status(400).json({ error: "Custom serial number must be a positive number" });
+            }
+            // Update the latest serial to the custom serial
+            fs.writeFileSync(serialPath, JSON.stringify({ latest: serial }));
+        } else {
+            // Auto-increment from current latest
+            serial = serialData.latest + 1;
+            fs.writeFileSync(serialPath, JSON.stringify({ latest: serial }));
+        }
 
         const filename = `file_${serial}`;
         const inputPath = path.resolve(__dirname, "./Files/blank.pdf");

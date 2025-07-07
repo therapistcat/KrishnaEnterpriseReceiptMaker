@@ -100,10 +100,19 @@ function App() {
               fontSize: "1.1rem",
             }}
           >
-            Serial No: {serial}
+            Next Auto Serial No: {serial}
           </div>
         )}
         <form ref={formRef} onSubmit={handleSubmit}>
+          <label>
+            Custom Serial Number (optional):
+            <input
+              name="customSerial"
+              type="number"
+              placeholder="Leave empty for auto-generated serial"
+              style={{ fontStyle: "italic" }}
+            />
+          </label>
           <label>
             Party Name:
             <input name="partyName" type="text" required />
